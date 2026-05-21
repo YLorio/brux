@@ -1,0 +1,120 @@
+/* ============================================================
+   Brux · Fintech landing  ·  tokens, reset y base
+   Light · plano · un color de marca (verde) + neutros
+   ============================================================ */
+
+:root {
+  /* Marca (un solo acento) */
+  --green: #0a9d66;
+  --green-ink: #0a7d52; /* verde oscuro legible (texto/iconos) */
+  --green-dot: #12b87a; /* punto/acento vivo puntual */
+  --green-tint: rgba(10, 157, 102, 0.1);
+
+  /* Neutros */
+  --ink: #0b1b24;
+  --text: #0b1b24;
+  --text-dim: #5b6b73;
+  --bg: #f7f9f9;
+  --bg-2: #ffffff;
+  --card: #ffffff;
+  --card-2: #ffffff;
+  --border: #e4e9e9;
+  --border-strong: #ccd5d5;
+
+  /* Aliases de compatibilidad → ahora sólidos (sin degradados) */
+  --grad: var(--green);
+  --grad-text: var(--green-ink);
+  --grad-soft: var(--green-tint);
+  --green-bright: var(--green-dot);
+  --cyan: var(--green);
+  --glow-green: rgba(10, 157, 102, 0.22);
+
+  /* Tipografía */
+  --font: "Hanken Grotesk", "Inter", system-ui, -apple-system, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+
+  /* Forma y elevación */
+  --radius: 16px;
+  --radius-lg: 24px;
+  --shadow: 0 30px 60px -34px rgba(11, 27, 36, 0.22);
+
+  --container: 1180px;
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.brux-landing {
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.brux-landing img,
+.brux-landing svg {
+  display: block;
+  max-width: 100%;
+}
+
+.brux-landing a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.brux-landing button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+.brux-landing h1,
+.brux-landing h2,
+.brux-landing h3 {
+  line-height: 1.07;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.brux-landing ul {
+  list-style: none;
+  padding: 0;
+}
+
+::selection {
+  background: var(--green);
+  color: #ffffff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(11, 27, 36, 0.16);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(11, 27, 36, 0.26);
+}

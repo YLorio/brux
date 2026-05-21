@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-surface-subtle text-gray-900 font-sans antialiased;
+    @apply dark:bg-surface-dark dark:text-gray-100;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+}
+
+@layer components {
+  /* Ancho completo con margen (padding) horizontal estándar. */
+  .container-responsive {
+    @apply w-full px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Saldo / montos: tipografia tabular para alinear digitos */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer utilities {
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      rgb(0 0 0 / 0.04) 25%,
+      rgb(0 0 0 / 0.08) 37%,
+      rgb(0 0 0 / 0.04) 63%
+    );
+    background-size: 200% 100%;
+    @apply animate-shimmer;
+  }
+
+  .dark .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      rgb(255 255 255 / 0.04) 25%,
+      rgb(255 255 255 / 0.08) 37%,
+      rgb(255 255 255 / 0.04) 63%
+    );
+    background-size: 200% 100%;
+  }
+}
+
+/* Scrollbar discreta */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-gray-300 dark:bg-gray-700;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-600;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
