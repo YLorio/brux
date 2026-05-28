@@ -49,7 +49,9 @@ export function Modal({
   if (!open) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+    // Centrado vertical y horizontal en todos los tamaños. Padding del
+    // contenedor para que el card respire respecto a los bordes en móvil.
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
         className="absolute inset-0 bg-gray-900/50 backdrop-blur-sm animate-fade-in"
         onClick={onClose}
@@ -60,7 +62,7 @@ export function Modal({
         aria-modal="true"
         aria-label={title}
         className={cn(
-          'relative w-full rounded-t-2xl sm:rounded-2xl bg-white shadow-floating animate-scale-in',
+          'relative w-full rounded-2xl bg-white shadow-floating animate-scale-in',
           'dark:bg-surface-dark-elevated',
           'max-h-[92dvh] overflow-y-auto',
           sizes[size],

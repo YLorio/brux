@@ -1,30 +1,38 @@
 import {
-  US, EU, GB, JP, MX, CO, ES, DE, BR, SV, AR, CR,
-} from "country-flag-icons/react/3x2"
+  // LATAM
+  AR, BO, BR, CL, CO, CR, CU, DO, EC, GT, HN, MX, NI, PA, PE, PY, SV, UY, VE,
+  // North America
+  US, CA,
+  // Europa
+  ES, PT, GB, FR, DE, IT, NL, BE, CH, IE, SE, NO, DK, FI, PL, EU,
+  // Asia / Oceanía
+  JP, KR, CN, IN, SG, AU, NZ,
+} from "country-flag-icons/react/1x1"
 
+/** Mapa de banderas usadas. Cambiar a /1x1 (cuadrado) es lo que hace que se
+ *  vean bien dentro de un círculo: el centro del símbolo queda visible y no
+ *  recortamos franjas como pasaba con 3x2. */
 const map = {
-  us: US, eu: EU, gb: GB, jp: JP, mx: MX, co: CO, es: ES, de: DE, br: BR,
-  sv: SV, ar: AR, cr: CR,
+  ar: AR, bo: BO, br: BR, cl: CL, co: CO, cr: CR, cu: CU, do: DO, ec: EC,
+  gt: GT, hn: HN, mx: MX, ni: NI, pa: PA, pe: PE, py: PY, sv: SV, uy: UY, ve: VE,
+  us: US, ca: CA,
+  es: ES, pt: PT, gb: GB, fr: FR, de: DE, it: IT, nl: NL, be: BE, ch: CH,
+  ie: IE, se: SE, no: NO, dk: DK, fi: FI, pl: PL, eu: EU,
+  jp: JP, kr: KR, cn: CN, in: IN, sg: SG, au: AU, nz: NZ,
 }
 
 export type FlagCode = keyof typeof map
 
-/** Bandera SVG (country-flag-icons). Solo se empaquetan las banderas usadas.
- *  `cover` hace que la bandera rellene su contenedor (para recortes circulares). */
+/** Bandera SVG en aspecto 1×1. El consumidor decide el tamaño vía CSS;
+ *  el SVG rellena su contenedor. */
 export default function Flag({
   cc,
   className,
-  cover,
 }: {
   cc: FlagCode
   className?: string
-  cover?: boolean
 }) {
   const F = map[cc]
-  return (
-    <F
-      className={`flag ${className ?? ""}`}
-      preserveAspectRatio={cover ? "xMidYMid slice" : undefined}
-    />
-  )
+  if (!F) return null
+  return <F className={`flag ${className ?? ""}`} />
 }
