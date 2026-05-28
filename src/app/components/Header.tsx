@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Sun, Moon, Menu, ChevronDown, LogOut, RotateCcw, Settings } from 'lucide-react';
+import { Sun, Moon, ChevronDown, LogOut, RotateCcw, Settings } from 'lucide-react';
 import { Avatar, Badge, Logo } from '@shared/components/ui';
 import { ConfirmModal } from '@shared/components/feedback';
 import { countInFlight } from '@shared/lib/store';
@@ -27,7 +27,7 @@ function ThemeToggle() {
       type="button"
       onClick={toggle}
       aria-label={theme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
-      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+      className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100 lg:inline-flex"
     >
       {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
     </button>
@@ -84,13 +84,15 @@ function UserMenu() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 rounded-xl py-1.5 pl-1.5 pr-2.5 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+        // En móvil mostramos solo el avatar (sin chevron) — el menú "Más"
+        // del BottomNav ya cubre las acciones secundarias.
+        className="flex items-center gap-2 rounded-xl py-1.5 pl-1.5 pr-1.5 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 lg:pr-2.5"
       >
         <Avatar name={profile.display_name} src={profile.avatar_url} size="sm" />
-        <span className="hidden text-sm font-medium text-gray-700 dark:text-gray-200 sm:block">
+        <span className="hidden text-sm font-medium text-gray-700 dark:text-gray-200 lg:block">
           @{profile.username}
         </span>
-        <ChevronDown className="h-4 w-4 text-gray-400" aria-hidden />
+        <ChevronDown className="hidden h-4 w-4 text-gray-400 lg:block" aria-hidden />
       </button>
 
       {open && (
@@ -150,26 +152,23 @@ function UserMenu() {
   );
 }
 
-export function Header({ onMenuClick }: { onMenuClick: () => void }) {
+/** Header nativo-móvil:
+ *  - Móvil: logo + título de sección centrado + avatar (acciones secundarias
+ *    viven en el BottomNav → tab "Más").
+ *  - Desktop (lg+): logo + título a la izquierda, badge de operaciones en
+ *    curso + theme toggle + user menu a la derecha. */
+export function Header() {
   const title = useSectionTitle();
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-3 border-b border-gray-200/80 bg-white/80 px-4 backdrop-blur-md dark:border-gray-800/80 dark:bg-surface-dark/80 sm:px-6 lg:px-8">
-      {/* Móvil: abrir sidebar + logo */}
-      <button
-        type="button"
-        onClick={onMenuClick}
-        aria-label="Abrir menú"
-        className="-ml-1 flex h-10 w-10 items-center justify-center rounded-xl text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 lg:hidden"
-      >
-        <Menu className="h-5 w-5" aria-hidden />
-      </button>
+    <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-3 border-b border-gray-200/80 bg-white/80 px-4 backdrop-blur-md dark:border-gray-800/80 dark:bg-surface-dark/80 sm:h-16 sm:px-6 lg:px-8">
       <div className="lg:hidden">
-        <Logo height={24} />
+        <Logo height={22} />
       </div>
 
-      {/* Desktop: título de sección */}
-      <h1 className="hidden text-lg font-semibold tracking-tight text-gray-900 dark:text-gray-100 lg:block">
+      {/* Móvil: título centrado en absolute para que avatar quede a la derecha
+          sin pelearse con el flex. Desktop: título de sección a la izquierda. */}
+      <h1 className="pointer-events-none absolute left-1/2 -translate-x-1/2 text-sm font-semibold text-gray-900 dark:text-gray-100 sm:text-base lg:static lg:translate-x-0 lg:text-lg lg:font-semibold lg:tracking-tight">
         {title}
       </h1>
 

@@ -25,10 +25,30 @@ export type LandingDict = {
     ctaSecondary: string
     note: string
     shotAlt: string
+    /** Chip "Sandbox · Demo" arriba del título; también es el atajo
+     *  discreto al login del panel. */
+    sandbox: string
+    sandboxA11y: string
+    waitlist: {
+      /** Texto del chip social, recibe el total (base + reales). */
+      socialProof: (count: number) => string
+      emailPlaceholder: string
+      emailLabel: string
+      submit: string
+      submitting: string
+      success: string
+      alreadyIn: string
+      invalid: string
+      offline: string
+      error: string
+      haveAccount: string
+      signIn: string
+    }
   }
   highlights: {
     headingText: string
     headingHighlight: string
+    cta: string
     items: { title: string; text: string }[]
   }
   showcase: {
@@ -36,6 +56,12 @@ export type LandingDict = {
     rows: { title: string; highlight: string; text: string; points: string[] }[]
   }
   bento: {
+    headingText: string
+    headingHighlight: string
+    sub: string
+    cards: { title: string; text: string }[]
+  }
+  capabilities: {
     headingText: string
     headingHighlight: string
     sub: string
@@ -55,6 +81,15 @@ export type LandingDict = {
     inputLabel: string
     submit: string
     done: (user: string) => string
+  }
+  appStores: {
+    eyebrow: string
+    title: string
+    highlight: string
+    text: string
+    shotAlt: string
+    apple: { small: string; big: string }
+    google: { small: string; big: string }
   }
   footer: {
     brand: string
@@ -81,27 +116,44 @@ export const translations: Record<Lang, LandingDict> = {
     hero: {
       title: "Desbloquea las fronteras del dinero",
       highlight: "fronteras",
-      lead: "Mueve dinero de un país a otro con solo un @usuario o un código QR. Tus clientes pagan sin exponer datos bancarios y con menos riesgo de fraude.",
+      lead: "Un @usuario. Pagos entre países. Cero datos bancarios expuestos.",
       ctaPrimary: "Crear mi cuenta",
       ctaSecondary: "Iniciar sesión",
       note: "Verificación de identidad · Sin datos bancarios · Cobros B2B con QR",
       shotAlt: "Panel de Brux",
+      sandbox: "Sandbox · Demo",
+      sandboxA11y: "Acceder al sandbox de Brux",
+      waitlist: {
+        socialProof: (count) => `+${count} personas esperando entrar`,
+        emailPlaceholder: "tu@correo.com",
+        emailLabel: "Tu correo",
+        submit: "Unirme a la lista",
+        submitting: "Apuntándote…",
+        success: "¡Estás dentro! Te avisamos en cuanto abramos.",
+        alreadyIn: "Ya estabas en la lista — te avisamos pronto.",
+        invalid: "Ese correo no parece válido.",
+        offline: "Ahora no podemos guardarte. Inténtalo en unos minutos.",
+        error: "Algo salió mal. Inténtalo de nuevo.",
+        haveAccount: "¿Ya tienes cuenta?",
+        signIn: "Iniciar sesión",
+      },
     },
     highlights: {
-      headingText: "Recibe pagos del mundo, SIMPLE Y RÁPIDO",
-      headingHighlight: "simple y rápido",
+      headingText: "Brux es para TODOS los que mueven dinero.",
+      headingHighlight: "todos",
+      cta: "Conocer más",
       items: [
         {
-          title: "Cobros B2B con QR",
-          text: "Tu negocio cobra a clientes y empresas escaneando un código.",
+          title: "Creadores y freelancers",
+          text: "Cobra a clientes del mundo entero sin abrir cuentas locales ni esperar días.",
         },
         {
-          title: "Pagos entre países",
-          text: "Envía y recibe de un país a otro, de forma simple y directa.",
+          title: "Negocios y comercios",
+          text: "Acepta pagos sin POS ni terminales. Tus clientes pagan con QR en segundos.",
         },
         {
-          title: "Sin datos bancarios",
-          text: "Nadie comparte números de cuenta: menos espacio para el fraude.",
+          title: "Familia y amigos",
+          text: "Manda dinero a los tuyos, vivan donde vivan. Llega tan rápido como un mensaje.",
         },
       ],
     },
@@ -141,6 +193,29 @@ export const translations: Record<Lang, LandingDict> = {
         { title: "Verificación de identidad", text: "Usuarios verificados para operar con confianza." },
         { title: "Menos fraude", text: "Al no exponer datos bancarios, baja el riesgo de estafas." },
         { title: "API para negocios", text: "Integra los cobros de Brux en tu plataforma." },
+      ],
+    },
+    capabilities: {
+      headingText: "El @usuario es solo el comienzo.",
+      headingHighlight: "@usuario",
+      sub: "Todo lo que necesitas para cobrar, pagar y mover dinero — sin compartir tu banco.",
+      cards: [
+        {
+          title: "Entre países",
+          text: "Envía dinero desde donde estás hacia donde la otra persona lo necesita.",
+        },
+        {
+          title: "Envía a una persona",
+          text: "Solo eliges a quién, cuánto quieres mandar y Brux se encarga del resto.",
+        },
+        {
+          title: "Cobro con QR",
+          text: "Tus clientes escanean y pagan. Cero papeles, cero datos bancarios.",
+        },
+        {
+          title: "Control y seguridad",
+          text: "Cada movimiento queda claro, trazable y visible para reducir fricción y errores.",
+        },
       ],
     },
     faq: {
@@ -183,6 +258,15 @@ export const translations: Record<Lang, LandingDict> = {
       submit: "Crear mi cuenta",
       done: (user) => `¡@${user} reservado! Te llevamos a crear tu cuenta.`,
     },
+    appStores: {
+      eyebrow: "Próximamente",
+      title: "Llévate Brux en el bolsillo",
+      highlight: "bolsillo",
+      text: "Mueve tu dinero a la velocidad de un mensaje. Sin filas, sin esperas, sin papeleo.",
+      shotAlt: "App móvil de Brux",
+      apple: { small: "Descarga en", big: "App Store" },
+      google: { small: "Disponible en", big: "Google Play" },
+    },
     footer: {
       brand: "Pagos internacionales con un identificador simple: @usuario, teléfono, correo o QR. Dinero que se mueve a la velocidad de un mensaje.",
       columns: [
@@ -220,27 +304,44 @@ export const translations: Record<Lang, LandingDict> = {
     hero: {
       title: "Unlock the borders of money",
       highlight: "borders",
-      lead: "Move money from one country to another with just a @username or a QR code. Your customers pay without exposing bank details and with less risk of fraud.",
+      lead: "One @username. Cross-border payments. Zero bank details exposed.",
       ctaPrimary: "Create my account",
       ctaSecondary: "Sign in",
       note: "Identity verification · No bank details · B2B payments with QR",
       shotAlt: "Brux dashboard",
+      sandbox: "Sandbox · Demo",
+      sandboxA11y: "Enter the Brux sandbox",
+      waitlist: {
+        socialProof: (count) => `+${count} people waiting to get in`,
+        emailPlaceholder: "you@email.com",
+        emailLabel: "Your email",
+        submit: "Join the waitlist",
+        submitting: "Adding you…",
+        success: "You're in! We'll ping you the moment we open.",
+        alreadyIn: "You were already on the list — we'll be in touch soon.",
+        invalid: "That doesn't look like a valid email.",
+        offline: "We can't save you right now. Try again in a few minutes.",
+        error: "Something went wrong. Please try again.",
+        haveAccount: "Already have an account?",
+        signIn: "Sign in",
+      },
     },
     highlights: {
-      headingText: "Get paid from anywhere, SIMPLE AND FAST",
-      headingHighlight: "simple and fast",
+      headingText: "Brux works for EVERYONE who moves money.",
+      headingHighlight: "everyone",
+      cta: "Learn more",
       items: [
         {
-          title: "B2B payments with QR",
-          text: "Your business gets paid by customers and companies by scanning a code.",
+          title: "Creators & freelancers",
+          text: "Get paid by clients worldwide. No local accounts, no waiting days.",
         },
         {
-          title: "Cross-border payments",
-          text: "Send and receive from one country to another, simply and directly.",
+          title: "Businesses & merchants",
+          text: "Accept payments without a POS or terminal. Customers pay by QR in seconds.",
         },
         {
-          title: "No bank details",
-          text: "Nobody shares account numbers — less room for fraud.",
+          title: "Family & friends",
+          text: "Send money to your people, wherever they live. It arrives as fast as a message.",
         },
       ],
     },
@@ -282,6 +383,29 @@ export const translations: Record<Lang, LandingDict> = {
         { title: "API for businesses", text: "Integrate Brux payments into your platform." },
       ],
     },
+    capabilities: {
+      headingText: "Your @username is just the start.",
+      headingHighlight: "@username",
+      sub: "Everything you need to get paid, pay and move money — without sharing your bank.",
+      cards: [
+        {
+          title: "Cross-border",
+          text: "Send money from where you are to where the other person needs it.",
+        },
+        {
+          title: "Send to a person",
+          text: "Just pick who and how much. Brux takes care of the rest.",
+        },
+        {
+          title: "QR collection",
+          text: "Your customers scan and pay. Zero paper, zero bank details.",
+        },
+        {
+          title: "Control & visibility",
+          text: "Every movement is clear, traceable and visible — less friction, fewer errors.",
+        },
+      ],
+    },
     faq: {
       headingText: "Frequently asked questions",
       headingHighlight: "questions",
@@ -321,6 +445,15 @@ export const translations: Record<Lang, LandingDict> = {
       inputLabel: "Your @username",
       submit: "Create my account",
       done: (user) => `@${user} reserved! Taking you to create your account.`,
+    },
+    appStores: {
+      eyebrow: "Coming soon",
+      title: "Carry Brux in your pocket",
+      highlight: "pocket",
+      text: "Move your money at the speed of a message. No lines, no waiting, no paperwork.",
+      shotAlt: "Brux mobile app",
+      apple: { small: "Download on the", big: "App Store" },
+      google: { small: "Get it on", big: "Google Play" },
     },
     footer: {
       brand: "International payments with one simple identifier: @username, phone, email, or QR. Money that moves at the speed of a message.",

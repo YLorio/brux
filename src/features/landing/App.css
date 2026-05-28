@@ -31,7 +31,7 @@
   padding: 0 22px;
   border-radius: 14px;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: var(--fs-base);
   white-space: nowrap;
   transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease,
     box-shadow 0.2s ease, color 0.2s ease;
@@ -45,7 +45,7 @@
 .btn--lg {
   height: 54px;
   padding: 0 28px;
-  font-size: 1rem;
+  font-size: var(--fs-md);
 }
 .btn--primary {
   background: var(--grad);
@@ -77,7 +77,7 @@
   background: rgba(0, 194, 129, 0.09);
   border: 1px solid rgba(0, 194, 129, 0.22);
   color: var(--green-ink);
-  font-size: 0.82rem;
+  font-size: var(--fs-sm);
   font-weight: 600;
 }
 .badge__dot {
@@ -101,7 +101,7 @@
   border-radius: 999px;
   background: var(--card-2);
   border: 1px solid var(--border);
-  font-size: 0.86rem;
+  font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--text);
 }
@@ -112,7 +112,7 @@
 }
 .eyebrow {
   display: inline-block;
-  font-size: 0.78rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -121,21 +121,43 @@
 }
 
 /* ---------- Secciones ---------- */
+/* Padding vertical fluido: ~56px en móvil estrecho → 88px en desktop ancho.
+   Antes era 112px fijo, demasiado generoso y rompía el ritmo entre secciones. */
 .section {
-  padding: 112px 0;
+  padding: clamp(56px, 7vw, 88px) 0;
+}
+/* Ritmo de tonalidades — solo dos colores (gris #f4f5f4 / blanco #fff):
+     Hero ─────────── #f4f5f4 (gris)
+     Countries ───── #ffffff
+     Highlights ──── #ffffff
+     Capabilities ── #f4f5f4
+     AppStores ───── #ffffff
+     FAQ ──────────── #f4f5f4              ← pop oscuro antes del cierre
+     Welcome ──────── #ffffff              */
+.capabilities {
+  background: #f4f5f4;
+}
+.faq {
+  background: #f4f5f4;
+}
+.highlights,
+.welcome {
+  background: #ffffff;
 }
 .section__head {
   max-width: 640px;
-  margin: 0 auto 60px;
+  margin: 0 auto clamp(32px, 4vw, 48px);
   text-align: center;
 }
 .section__head h2 {
-  font-size: clamp(1.9rem, 4vw, 2.9rem);
+  /* Tamaño fluido: ~30px móvil → ~44px desktop. Antes en --fs-2xl
+     (24→36) se sentía como párrafo grande, no como título. */
+  font-size: var(--fs-3xl);
 }
 .section__sub {
   margin-top: 16px;
   color: var(--text-dim);
-  font-size: 1.08rem;
+  font-size: var(--fs-md);
   max-width: 56ch;
   margin-inline: auto;
 }
@@ -157,14 +179,18 @@
   position: sticky;
   top: 0;
   z-index: 50;
+  /* Estado base: semitransparente con blur (cristal) — visible desde el
+     primer pixel, no solo al hacer scroll. */
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: saturate(160%) blur(14px);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
   border-bottom: 1px solid transparent;
-  transition: background 0.3s ease, border-color 0.3s ease,
-    backdrop-filter 0.3s ease;
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
+/* Al hacer scroll se oscurece un toque y aparece el border inferior —
+   pequeño hint visual de que la barra "está activa". */
 .nav--scrolled {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: saturate(160%) blur(16px);
-  -webkit-backdrop-filter: saturate(160%) blur(16px);
+  background: rgba(255, 255, 255, 0.82);
   border-bottom-color: var(--border);
 }
 .nav__inner {
@@ -182,7 +208,7 @@
 .nav__links a {
   font-weight: 500;
   color: var(--text-dim);
-  font-size: 0.94rem;
+  font-size: var(--fs-base);
   transition: color 0.18s ease;
 }
 .nav__links a:hover {
@@ -200,7 +226,7 @@
 }
 .nav__signin {
   font-weight: 600;
-  font-size: 0.93rem;
+  font-size: var(--fs-base);
   color: var(--text-dim);
 }
 .nav__signin:hover {
@@ -236,7 +262,7 @@
   padding: 5px 11px;
   border-radius: 999px;
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: var(--fs-sm);
   line-height: 1;
   letter-spacing: 0.02em;
   color: var(--text-dim);
@@ -258,7 +284,11 @@
 /* ---------- Hero ---------- */
 .hero {
   position: relative;
-  padding: 60px 0 100px;
+  /* Solo padding superior a nivel de sección. El bottom queda en 0 para que
+     la imagen del hero pueda flushear contra el borde inferior. El copy se
+     encarga de su propio padding-bottom para no quedar pegado a la imagen. */
+  padding: clamp(40px, 5vw, 72px) 0 0;
+  background: #f4f5f4;
   overflow: hidden;
 }
 .hero__orb {
@@ -279,23 +309,88 @@
   z-index: 1;
   display: grid;
   grid-template-columns: 1fr;
-  align-items: center;
-  gap: 44px;
-  padding-top: 48px;
-  /* Hero a todo el ancho, sin margen de centrado a la izquierda */
+  /* Los hijos se anclan al fondo de su fila — la imagen toca el border
+     inferior del hero, integrada. */
+  align-items: end;
+  gap: 32px;
+  /* IMPORTANTE: sin padding-inline aquí. El copy aporta su propio padding
+     lateral; la imagen queda libre para flushear al borde derecho. */
   max-width: none;
+  padding-inline: 0;
+}
+/* El copy reemplaza el padding que tenía el .hero__inner. Padding-bottom
+   propio así no queda pegado a la imagen cuando se apilan en móvil. */
+.hero__copy {
   padding-inline: clamp(24px, 6vw, 96px);
+  padding-bottom: clamp(32px, 4vw, 56px);
+}
+.hero__media {
+  display: flex;
+  justify-content: stretch;
+  align-self: end;
+}
+/* Imagen — flushea a los bordes (right/bottom) y se difumina por el lado
+   que toca el copy, integrándose con el fondo del hero. Sin drop-shadow
+   para no "flotar" encima. */
+.hero__media-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  /* MÓVIL: la imagen está debajo del copy → difuminar por arriba.
+     El primer 22% se desvanece al bg de la página; el resto queda
+     opaco hasta tocar el borde inferior del hero. */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 22%
+  );
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 22%);
+}
+
+/* Desktop ≥880px: 2-col, copy izquierda + escena derecha que bleed al
+   borde derecho del viewport (no hay padding-right en ningún ancestro). */
+@media (min-width: 880px) {
+  .hero__inner {
+    grid-template-columns: 1fr 1.05fr;
+    gap: 0;
+  }
+  .hero__copy {
+    /* Sin padding-right en desktop — la imagen reclama esa zona. */
+    padding-right: 0;
+    padding-bottom: clamp(56px, 5vw, 80px);
+  }
+  .hero__media {
+    justify-content: flex-end;
+  }
+  .hero__media-img {
+    /* En desktop la imagen llena el ancho de su columna y toca el borde
+       derecho del viewport (sin padding-inline en ningún ancestro). */
+    width: 100%;
+    height: auto;
+    max-height: 640px;
+    object-fit: contain;
+    object-position: right bottom;
+    /* DESKTOP: la imagen está al lado del copy → difuminar desde la
+       izquierda. El primer 24% se desvanece al bg para que el borde
+       izquierdo de la imagen no genere un "corte" visible. */
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      #000 24%
+    );
+    mask-image: linear-gradient(to right, transparent 0%, #000 24%);
+  }
 }
 .hero__title {
   margin: 0;
-  font-size: clamp(2.9rem, 6.2vw, 5.6rem);
+  font-size: var(--fs-display);
   letter-spacing: -0.04em;
   line-height: 1.02;
 }
 .hero__lead {
   margin-top: 22px;
   max-width: 46ch;
-  font-size: 1.16rem;
+  font-size: var(--fs-md);
   color: var(--text-dim);
 }
 .hero__actions {
@@ -307,7 +402,191 @@
 .hero__note {
   margin-top: 22px;
   color: var(--text-dim);
-  font-size: 0.92rem;
+  font-size: var(--fs-base);
+}
+
+/* ---- Waitlist del hero ---- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+.hero__waitlist {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  width: 100%;
+  max-width: 420px;
+  margin-inline: auto;
+}
+.hero__waitlist-proof {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 2px;
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+.hero__waitlist-avatars {
+  display: inline-flex;
+  align-items: center;
+}
+.hero__waitlist-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(11, 27, 36, 0.18);
+  background: var(--bg);
+}
+.hero__waitlist-avatar:not(:first-child) {
+  margin-left: -10px;
+}
+.hero__waitlist-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+.hero__waitlist-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  font: inherit;
+  font-size: var(--fs-base);
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  outline: 0;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.hero__waitlist-input::placeholder {
+  color: var(--text-dim);
+}
+.hero__waitlist-input:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(10, 157, 102, 0.14);
+}
+.hero__waitlist-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+/* Especificidad (0,2,0): vence al reset global `.brux-landing button`
+   (0,1,1) que pone background:none + color:inherit. Sin esto el botón
+   sale blanco con texto gris. */
+.brux-landing .hero__waitlist-btn {
+  width: 100%;
+  height: 48px;
+  padding: 0 18px;
+  font: inherit;
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: #fff;
+  background: var(--green);
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease,
+    box-shadow 0.15s ease;
+  box-shadow: 0 6px 16px -8px rgba(10, 157, 102, 0.55);
+}
+.brux-landing .hero__waitlist-btn:hover:not(:disabled) {
+  background: var(--green-ink);
+  box-shadow: 0 10px 22px -10px rgba(10, 157, 102, 0.65);
+}
+.brux-landing .hero__waitlist-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.brux-landing .hero__waitlist-btn:disabled {
+  opacity: 0.75;
+  cursor: progress;
+}
+.hero__waitlist-status {
+  margin: 2px 0 0;
+  text-align: center;
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+.hero__waitlist-status.is-ok {
+  color: var(--green-ink);
+  font-weight: 600;
+}
+.hero__waitlist-status.is-error {
+  color: #b3261e;
+  font-weight: 600;
+}
+.hero__waitlist-signin {
+  margin: 6px 0 0;
+  text-align: center;
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+.hero__waitlist-link {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.hero__waitlist-link:hover {
+  color: var(--green-ink);
+}
+
+/* ---- Powered by Stellar (pildora arriba del título del hero) ----
+   Bg = mismo color que el hero (#f4f5f4) → la "caja" del badge se
+   funde con el fondo; lo que define la pildora es el BORDE verde
+   completo alrededor. El logo de Stellar usa mix-blend-mode para
+   neutralizar el fondo blanco que pueda traer la imagen AVIF. */
+.hero__powered-by {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: clamp(14px, 1.5vw, 20px);
+  padding: 3px 20px;
+  /* Border-gradient en una pildora con border-radius:
+       - capa `padding-box`: bg sólido para el contenido (= hero #f4f5f4)
+       - capa `border-box`: gradient horizontal verde → bg, que se ve
+         "a través" del `border: 2px solid transparent`.
+     Resultado: el borde arranca verde brand a la izquierda y se
+     desvanece en el color del fondo antes de llegar a la derecha. */
+  background:
+    linear-gradient(#f4f5f4, #f4f5f4) padding-box,
+    linear-gradient(to right, var(--green) 0%, #f4f5f4 85%) border-box;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: transform 0.18s ease, color 0.18s ease;
+}
+.hero__powered-by:hover {
+  transform: translateY(-1px);
+  color: var(--ink);
+}
+.hero__powered-by-label {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.hero__powered-by-logo {
+  height: 32px;
+  width: auto;
+  display: block;
+  /* Quita el bg blanco que pueda venir horneado en el AVIF: en bg
+     claro, multiply hace que los píxeles blancos se "transparenten"
+     y solo se vea el wordmark oscuro. */
+  mix-blend-mode: multiply;
 }
 
 /* Hero simplificado: copy centrado + imagen sola en fila completa */
@@ -350,7 +629,7 @@
 .hero--centered .hero__title {
   max-width: 15ch;
   margin-inline: auto;
-  font-size: clamp(2.7rem, 6.8vw, 5rem);
+  font-size: var(--fs-display);
 }
 .hero--centered .hero__lead {
   margin-inline: auto;
@@ -395,7 +674,7 @@
   background: #fff;
   border: 1px solid var(--border);
   box-shadow: 0 16px 34px -20px rgba(11, 27, 36, 0.3);
-  font-size: 0.86rem;
+  font-size: var(--fs-sm);
   font-weight: 700;
   color: var(--ink);
   white-space: nowrap;
@@ -474,7 +753,7 @@
 }
 .hero__methods-label {
   color: var(--text-dim);
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
   margin-right: 4px;
 }
 
@@ -538,11 +817,11 @@
 }
 .hero__fcard strong {
   display: block;
-  font-size: 0.98rem;
+  font-size: var(--fs-base);
   font-weight: 700;
 }
 .hero__fcard span {
-  font-size: 0.77rem;
+  font-size: var(--fs-xs);
   color: var(--text-dim);
 }
 .hero__fcard--in {
@@ -610,7 +889,7 @@
   padding: 0 6px;
   margin-bottom: 16px;
   color: var(--ink);
-  font-size: 0.72rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
 }
 .pm-status__icons {
@@ -655,11 +934,11 @@
   line-height: 1.2;
 }
 .pm-greet span {
-  font-size: 0.71rem;
+  font-size: var(--fs-xs);
   color: var(--text-dim);
 }
 .pm-greet strong {
-  font-size: 0.93rem;
+  font-size: var(--fs-base);
 }
 .pm-bell {
   margin-left: auto;
@@ -679,22 +958,22 @@
   margin-bottom: 15px;
 }
 .pm-balance__label {
-  font-size: 0.74rem;
+  font-size: var(--fs-xs);
   color: var(--text-dim);
 }
 .pm-balance__value {
-  font-size: 1.95rem;
+  font-size: var(--fs-xl);
   font-weight: 800;
   letter-spacing: -0.02em;
 }
 .pm-balance__value small {
-  font-size: 1.05rem;
+  font-size: var(--fs-md);
   color: var(--text-dim);
 }
 .pm-balance__chip {
   align-self: flex-start;
   margin-top: 4px;
-  font-size: 0.71rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   color: var(--green-ink);
 }
@@ -711,7 +990,7 @@
   gap: 6px;
   padding: 11px;
   border-radius: 13px;
-  font-size: 0.81rem;
+  font-size: var(--fs-sm);
   font-weight: 700;
   background: rgba(10, 28, 36, 0.05);
   border: 1px solid var(--border);
@@ -731,7 +1010,7 @@
 }
 .pm-activity__title {
   display: block;
-  font-size: 0.76rem;
+  font-size: var(--fs-xs);
   color: var(--text-dim);
   margin-bottom: 8px;
 }
@@ -749,7 +1028,7 @@
   height: 33px;
   border-radius: 50%;
   background: rgba(10, 28, 36, 0.06);
-  font-size: 0.8rem;
+  font-size: var(--fs-sm);
   font-weight: 700;
 }
 .pm-row__info {
@@ -758,15 +1037,15 @@
   line-height: 1.25;
 }
 .pm-row__info strong {
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
 }
 .pm-row__info span {
-  font-size: 0.71rem;
+  font-size: var(--fs-xs);
   color: var(--text-dim);
 }
 .pm-row__amt {
   margin-left: auto;
-  font-size: 0.88rem;
+  font-size: var(--fs-sm);
   font-weight: 700;
   color: var(--text-dim);
 }
@@ -784,7 +1063,7 @@
 .proof__lead {
   text-align: center;
   color: var(--text-dim);
-  font-size: 0.95rem;
+  font-size: var(--fs-base);
   max-width: 50ch;
   margin: 0 auto 40px;
 }
@@ -798,7 +1077,7 @@
 }
 .proof__value {
   display: block;
-  font-size: clamp(2rem, 4vw, 2.9rem);
+  font-size: var(--fs-2xl);
   font-weight: 800;
   letter-spacing: -0.03em;
   background: var(--grad-text);
@@ -810,7 +1089,7 @@
   display: block;
   margin-top: 4px;
   color: var(--text-dim);
-  font-size: 0.92rem;
+  font-size: var(--fs-base);
 }
 
 /* ---------- Comparación (problema → solución) ---------- */
@@ -836,7 +1115,7 @@
 }
 .compare__tag {
   display: inline-block;
-  font-size: 0.8rem;
+  font-size: var(--fs-sm);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -854,7 +1133,7 @@
   display: flex;
   align-items: center;
   gap: 13px;
-  font-size: 1rem;
+  font-size: var(--fs-md);
   color: var(--text);
 }
 .compare__card--bad .compare__list li {
@@ -891,12 +1170,12 @@
   order: 2;
 }
 .feature-row__text h2 {
-  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+  font-size: var(--fs-2xl);
   margin-bottom: 16px;
 }
 .feature-row__text p {
   color: var(--text-dim);
-  font-size: 1.1rem;
+  font-size: var(--fs-md);
   max-width: 44ch;
 }
 .feat-list {
@@ -975,19 +1254,26 @@
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid var(--border);
   backdrop-filter: blur(10px);
-  font-size: 0.82rem;
+  font-size: var(--fs-sm);
   font-weight: 700;
   box-shadow: 0 14px 30px -20px rgba(10, 28, 36, 0.5);
 }
 .globe__chip-flag {
-  font-size: 1rem;
+  font-size: var(--fs-md);
+}
+/* Como ahora Flag es 1×1, mostramos un mini círculo dentro del chip en vez
+   del rectángulo que daba el SVG 3×2. */
+.globe__chip .flag {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  vertical-align: middle;
+  box-shadow: none;
 }
 
 /* ---------- Capacidades (split + cuadrícula formal) ---------- */
 .bento {
-  background: var(--bg-2);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+  background: #f4f5f4;
 }
 .bento__split {
   display: grid;
@@ -996,7 +1282,7 @@
   gap: 48px;
 }
 .bento__copy h2 {
-  font-size: clamp(1.9rem, 3.8vw, 2.8rem);
+  font-size: var(--fs-2xl);
   max-width: 13ch;
 }
 .bento__copy .section__sub {
@@ -1044,12 +1330,12 @@
   height: 24px;
 }
 .capcard h3 {
-  font-size: 1.14rem;
+  font-size: var(--fs-md);
 }
 .capcard p {
   margin-top: 8px;
   color: var(--text-dim);
-  font-size: 0.94rem;
+  font-size: var(--fs-base);
 }
 @media (max-width: 900px) {
   .bento__split {
@@ -1118,14 +1404,14 @@
   border-color: rgba(8, 145, 178, 0.2);
 }
 .usecase__tag {
-  font-size: 0.8rem;
+  font-size: var(--fs-sm);
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--text-dim);
 }
 .usecase h3 {
-  font-size: 1.45rem;
+  font-size: var(--fs-lg);
   max-width: 15ch;
 }
 .usecase__list {
@@ -1177,14 +1463,14 @@
 }
 .waitlist__title {
   margin: 0 auto;
-  font-size: clamp(2rem, 4.8vw, 3.3rem);
+  font-size: var(--fs-3xl);
   max-width: 18ch;
 }
 .waitlist__text {
   margin: 18px auto 0;
   max-width: 46ch;
   color: var(--text-dim);
-  font-size: 1.12rem;
+  font-size: var(--fs-md);
 }
 .waitlist__form {
   display: flex;
@@ -1202,7 +1488,7 @@
   border: 1px solid var(--border);
   background: #fff;
   color: var(--text);
-  font-size: 1rem;
+  font-size: var(--fs-md);
   transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 .waitlist__input::placeholder {
@@ -1216,7 +1502,7 @@
 .waitlist__count {
   margin-top: 24px;
   color: var(--text-dim);
-  font-size: 0.96rem;
+  font-size: var(--fs-base);
 }
 .waitlist__count strong {
   color: var(--ink);
@@ -1244,7 +1530,7 @@
   border-radius: 50%;
   background: var(--green);
   color: #fff;
-  font-size: 0.78rem;
+  font-size: var(--fs-xs);
 }
 
 /* Bienvenida · foto a toda la sección con el texto encima */
@@ -1285,7 +1571,7 @@
   margin: 0;
   max-width: 13ch;
   text-align: left;
-  font-size: clamp(2.3rem, 4.4vw, 3.6rem);
+  font-size: var(--fs-3xl);
   line-height: 1.05;
   color: #fff;
 }
@@ -1295,7 +1581,7 @@
 .welcome__body .waitlist__text {
   margin: 18px 0 0;
   text-align: left;
-  font-size: 1.22rem;
+  font-size: var(--fs-lg);
   color: rgba(255, 255, 255, 0.9);
 }
 .welcome__body .welcome__form {
@@ -1345,7 +1631,7 @@
 }
 .welcome__prefix {
   color: var(--text-dim);
-  font-size: 1rem;
+  font-size: var(--fs-md);
   white-space: nowrap;
 }
 .welcome__input {
@@ -1354,7 +1640,7 @@
   border: none;
   background: transparent;
   padding: 0 6px;
-  font-size: 1rem;
+  font-size: var(--fs-md);
   font-weight: 600;
   color: var(--text);
 }
@@ -1381,31 +1667,79 @@
   box-shadow: none;
 }
 
-/* ---------- Países (banderas redondas) ---------- */
+/* ---------- Países (marquee de banderas redondas) ---------- */
 .countries {
-  padding: 12px 0 56px;
+  padding: 24px 0 64px;
+  background: #ffffff;
 }
-.countries__row {
+/* Contenedor que recorta y aplica un fade lateral via mask: las banderas
+   aparecen/desaparecen suavemente en los bordes en vez de cortarse de golpe. */
+.countries__marquee {
+  overflow: hidden;
+  /* Padding vertical para dar aire a la oscilación de las banderas
+     (translateY ±5px) y a la sombra al hover sin que se corte. */
+  padding: 16px 0;
+  -webkit-mask-image: linear-gradient(
+    to right, transparent, #000 10%, #000 90%, transparent
+  );
+  mask-image: linear-gradient(
+    to right, transparent, #000 10%, #000 90%, transparent
+  );
+}
+/* Pista de max-content que se traslada -50%. La lista se duplica en JSX
+   para que el loop empalme sin saltos. Marquee más lento (75s) y curva
+   lineal para que se sienta tranquilo, no frenético. */
+.countries__track {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
   align-items: center;
-  gap: 56px;
+  gap: 40px;
+  width: max-content;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  animation: countries-scroll 75s linear infinite;
 }
+.countries__marquee:hover .countries__track {
+  animation-play-state: paused;
+}
+@keyframes countries-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+/* Cada bandera oscila suavemente en Y. El stagger entre banderas (set en
+   inline `animationDelay`) hace que la fila respire, como un campo de
+   banderines movidos por el viento. */
 .country__flag {
-  width: 70px;
-  height: 70px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #fff;
-  box-shadow: 0 6px 16px -6px rgba(11, 27, 36, 0.3);
-  transition: transform 0.2s ease;
+  background: #fff;
+  border: 1px solid var(--border);
+  box-shadow:
+    0 8px 18px -10px rgba(11, 27, 36, 0.28),
+    0 0 0 1px rgba(11, 27, 36, 0.02);
+  flex-shrink: 0;
+  /* Animación de flotación + transición separada para el hover. */
+  animation: flag-float 4.6s ease-in-out infinite;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
+@keyframes flag-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+/* Hover: pausamos la flotación dejando un translate ligeramente arriba
+   y crece un punto. Como el hover detiene también el marquee del padre,
+   se queda quieta lista para inspeccionar. */
 .country__flag:hover {
-  transform: translateY(-4px) scale(1.05);
+  animation-play-state: paused;
+  transform: translateY(-8px) scale(1.08);
+  box-shadow:
+    0 16px 32px -14px rgba(11, 27, 36, 0.35),
+    0 0 0 2px rgba(10, 157, 102, 0.4);
 }
 .country__flag .flag {
   width: 100%;
@@ -1414,61 +1748,237 @@
   box-shadow: none;
   vertical-align: top;
 }
+@media (max-width: 640px) {
+  .country__flag {
+    width: 56px;
+    height: 56px;
+  }
+  .countries__track {
+    gap: 28px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .countries__track,
+  .country__flag {
+    animation: none;
+  }
+}
 
-/* ---------- Tarjetas con imagen (3 destacados) ---------- */
+/* ---------- Tarjetas destacadas (visual + texto + CTA) ----------
+   Patrón: card visual independiente arriba (foto en aspecto 3:2 con overlay
+   verde sutil), título / descripción / "Conocer más →" debajo, sin contenedor
+   extra. Hover: visual se levanta y la flecha del CTA avanza. */
 .highlights__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  gap: 32px;
 }
-.imgcard {
+.hlcard {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+.hlcard__media {
   position: relative;
-  aspect-ratio: 4 / 5;
-  border-radius: 20px;
+  aspect-ratio: 3 / 2;
+  margin-bottom: 22px;
+  border-radius: 18px;
   overflow: hidden;
-  isolation: isolate;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(11, 27, 36, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.imgcard__img {
-  position: absolute;
-  inset: 0;
+.hlcard:hover .hlcard__media {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 30px -16px rgba(11, 27, 36, 0.22);
+}
+.hlcard__img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
-.imgcard::after {
-  content: "";
+/* Tinte verde brand, ligero y multiply: la foto sigue legible y la sección
+   se siente parte de la identidad de Brux (no la "naranja" del ejemplo). */
+.hlcard__overlay {
   position: absolute;
   inset: 0;
-  z-index: 1;
-  background: linear-gradient(
-    to top,
-    rgba(11, 27, 36, 0.9),
-    rgba(11, 27, 36, 0.2) 52%,
-    rgba(11, 27, 36, 0) 80%
-  );
+  background: rgba(10, 157, 102, 0.22);
+  mix-blend-mode: multiply;
+  pointer-events: none;
 }
-.imgcard__overlay {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 2;
-  padding: 24px;
+.hlcard__title {
+  margin: 0 0 10px;
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
 }
-.imgcard__title {
-  color: #fff;
-  font-size: 1.24rem;
+.hlcard__text {
+  margin: 0 0 18px;
+  flex: 1 1 auto;
+  color: var(--text-dim);
+  font-size: var(--fs-base);
+  line-height: 1.55;
 }
-.imgcard__text {
-  margin-top: 6px;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.94rem;
+.hlcard__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  font-weight: 600;
+  font-size: var(--fs-base);
+  color: var(--green-ink);
+  transition: color 0.2s ease;
 }
-@media (max-width: 760px) {
+.hlcard__cta svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s ease;
+}
+.hlcard:hover .hlcard__cta {
+  color: var(--green);
+}
+.hlcard:hover .hlcard__cta svg {
+  transform: translateX(4px);
+}
+@media (max-width: 880px) {
   .highlights__grid {
     grid-template-columns: 1fr;
-    max-width: 420px;
+    gap: 28px;
+    max-width: 440px;
     margin-inline: auto;
+  }
+}
+
+/* ---------- App Stores (descarga iOS / Android) ---------- */
+.appstores {
+  background: #ffffff;
+}
+/* 2-col en desktop: copy + CTAs a la izquierda, mockup del iPhone a la
+   derecha. Se apila en móvil con la imagen arriba. */
+.appstores__inner {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  align-items: center;
+  gap: 64px;
+}
+.appstores__copy h2 {
+  font-size: var(--fs-3xl);
+}
+.appstores__text {
+  margin-top: 16px;
+  font-size: var(--fs-md);
+  color: var(--text-dim);
+  max-width: 50ch;
+  line-height: 1.55;
+}
+.appstores__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 36px;
+}
+.appstores__visual {
+  display: flex;
+  justify-content: center;
+}
+/* Mockup del teléfono — solo la imagen, sin marco extra. La imagen
+   `mockup_hero.png` ya viene con el marco del iPhone integrado. */
+.appstores__mockup {
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  display: block;
+  /* Sombra ambiental sutil para despegar el mockup del fondo blanco. */
+  filter: drop-shadow(0 30px 50px rgba(11, 27, 36, 0.18));
+}
+
+/* --- Botones de tienda --- */
+.storebtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 200px;
+  padding: 12px 22px 12px 18px;
+  min-height: 64px;
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(11, 27, 36, 0.04);
+  transition: transform 0.18s ease, box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+.storebtn:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+  box-shadow: 0 18px 36px -20px rgba(11, 27, 36, 0.25);
+}
+/* Cuadrito del icono. Por defecto neutro (sirve al icono colorido de
+   Google Play). La variante `--apple` lo pinta dark para que el logo
+   blanco/negro de Apple resalte como en el badge oficial. */
+.storebtn__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--ink);
+  flex-shrink: 0;
+}
+.storebtn__icon svg {
+  width: 22px;
+  height: 22px;
+}
+.storebtn__icon--apple {
+  background: var(--ink);
+  color: #fff;
+}
+.storebtn__copy {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  text-align: left;
+  min-width: 0;
+}
+.storebtn__small {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  letter-spacing: 0.02em;
+}
+.storebtn__big {
+  margin-top: 2px;
+  font-size: var(--fs-md);
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+@media (max-width: 880px) {
+  .appstores__inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+  .appstores__text {
+    margin-inline: auto;
+  }
+  .appstores__buttons {
+    justify-content: center;
+  }
+  /* Orden natural: copy primero, mockup después. */
+  .appstores__mockup {
+    max-width: 280px;
+  }
+}
+@media (max-width: 560px) {
+  .storebtn {
+    min-width: 0;
+    width: 100%;
+    max-width: 320px;
+    justify-content: flex-start;
   }
 }
 
@@ -1490,7 +2000,7 @@
   gap: 24px;
   padding: 22px 2px;
   text-align: left;
-  font-size: 1.02rem;
+  font-size: var(--fs-md);
   font-weight: 600;
   color: var(--ink);
   transition: color 0.2s ease;
@@ -1516,7 +2026,7 @@
 .faq__a {
   padding: 0 2px 24px;
   color: var(--text-dim);
-  font-size: 0.98rem;
+  font-size: var(--fs-base);
   line-height: 1.7;
   max-width: 64ch;
 }
@@ -1536,7 +2046,7 @@
 .footer__brand p {
   margin-top: 16px;
   max-width: 320px;
-  font-size: 0.93rem;
+  font-size: var(--fs-base);
   color: var(--text-dim);
   line-height: 1.7;
 }
@@ -1546,7 +2056,7 @@
   gap: 24px;
 }
 .footer__col h4 {
-  font-size: 0.93rem;
+  font-size: var(--fs-base);
   font-weight: 700;
   margin-bottom: 14px;
 }
@@ -1555,7 +2065,7 @@
   gap: 10px;
 }
 .footer__col a {
-  font-size: 0.9rem;
+  font-size: var(--fs-base);
   color: var(--text-dim);
   transition: color 0.18s ease;
 }
@@ -1568,7 +2078,7 @@
   justify-content: space-between;
   gap: 12px;
   padding-top: 26px;
-  font-size: 0.86rem;
+  font-size: var(--fs-sm);
   color: var(--text-dim);
 }
 .footer__legal {

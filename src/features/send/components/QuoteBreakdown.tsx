@@ -1,4 +1,3 @@
-import { Info } from 'lucide-react';
 import type { Quote } from '@shared/lib/fx';
 import { formatMoney } from '@shared/lib/format';
 import { Flag } from '@shared/components/ui';
@@ -48,11 +47,6 @@ export function QuoteBreakdown({ quote, country }: Props) {
           strong
         />
       </div>
-
-      <p className="mt-3 flex items-start gap-1.5 text-xs text-gray-400 dark:text-gray-500">
-        <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
-        Sin conversión de divisas: el destinatario recibe el mismo monto que envías.
-      </p>
     </div>
   );
 }

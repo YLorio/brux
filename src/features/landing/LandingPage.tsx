@@ -4,9 +4,9 @@ import './App.css';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Highlights from './components/Highlights';
-import Showcase from './components/Showcase';
-import Bento from './components/Bento';
+import Capabilities from './components/Capabilities';
 import Countries from './components/Countries';
+import AppStores from './components/AppStores';
 import FAQ from './components/FAQ';
 import Welcome from './components/Welcome';
 import Footer from './components/Footer';
@@ -25,12 +25,20 @@ export function LandingPage() {
       <div className="brux-landing">
         <motion.div className="scroll-progress" style={{ scaleX: progress }} />
         <Navbar />
+        {/* Orden:
+            1. Hero ─────────── Hook + waitlist
+            2. Countries ────── Trust signal global
+            3. Highlights ───── 3 beneficios principales
+            4. Capabilities ── "El @usuario es solo el comienzo" + 4 cards
+            5. AppStores ───── Preview móvil
+            6. FAQ ──────────── Objeciones
+            7. Welcome ──────── Cierre — reserva tu @usuario */}
         <main>
           <Hero />
           <Countries />
           <Highlights />
-          <Showcase />
-          <Bento />
+          <Capabilities />
+          <AppStores />
           <FAQ />
           <Welcome />
         </main>

@@ -17,6 +17,7 @@
     "country-flag-icons": "^1.5.13",
     "flag-icons": "^7.5.0",
     "framer-motion": "^11.15.0",
+    "html-to-image": "^1.11.13",
     "jsqr": "^1.4.0",
     "lucide-react": "0.460.0",
     "qrcode.react": "4.2.0",

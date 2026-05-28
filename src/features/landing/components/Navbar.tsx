@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
 import { motion } from "framer-motion"
 import Logo from "./Logo"
 import LangToggle from "./LangToggle"
@@ -53,9 +52,6 @@ export default function Navbar() {
 
         <div className="nav__actions">
           <LangToggle />
-          <Link to="/login" className="nav__signin">
-            {t.nav.signIn}
-          </Link>
           <a href="#empezar" className="btn btn--primary">
             {t.nav.cta}
           </a>

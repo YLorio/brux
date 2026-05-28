@@ -1,4 +1,5 @@
-import { motion, type Variants } from "framer-motion"
+import { useRef } from "react"
+import { motion, useInView, type Variants } from "framer-motion"
 
 const ease = [0.22, 1, 0.36, 1] as const
 
@@ -27,13 +28,22 @@ type Props = {
   as?: "h1" | "h2"
 }
 
-/** Encabezado que revela su texto palabra por palabra al entrar en pantalla. */
+/** Encabezado que revela su texto palabra por palabra al entrar en pantalla.
+ *
+ *  Usamos `useInView` (no `whileInView`) porque al cambiar idioma el padre
+ *  remonta vía `key={text}` estando ya visible: el IntersectionObserver de
+ *  `whileInView` puede no disparar en ese caso y las palabras se quedan
+ *  en `initial` (opacity 0 + blur) → texto invisible. El hook sí reporta
+ *  la intersección actual en el primer effect tras el remount. */
 export default function WordsReveal({
   text,
   highlight,
   className,
   as = "h2",
 }: Props) {
+  const ref = useRef<HTMLHeadingElement>(null)
+  const inView = useInView(ref, { once: true, margin: "-80px" })
+
   const words = text.split(" ")
   const Comp = as === "h1" ? motion.h1 : motion.h2
   const strip = (s: string) => s.replace(/[.,;:¿?¡!]/g, "").toLowerCase()
@@ -42,11 +52,12 @@ export default function WordsReveal({
   )
   return (
     <Comp
+      ref={ref}
+      key={text}
       className={className}
       variants={container}
       initial="hidden"
-      whileInView="show"
-      viewport={{ once: false, margin: "-80px" }}
+      animate={inView ? "show" : "hidden"}
     >
       {words.map((w, i) => {
         const isHl = hlSet.has(strip(w))

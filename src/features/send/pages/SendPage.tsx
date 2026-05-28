@@ -10,6 +10,7 @@ import {
   ScanLine,
   ArrowLeft,
   ArrowRight,
+  Wallet,
 } from 'lucide-react';
 import type { CurrencyCode } from '@/shared/types';
 import { getProfileByUsername, listProfiles } from '@shared/lib/store';
@@ -31,50 +32,6 @@ import { useCreateOrder } from '@features/payments';
 import { useWallets } from '@features/wallet';
 import { QuoteBreakdown } from '../components/QuoteBreakdown';
 import { ScanModal } from '../components/ScanModal';
-
-const STEPS = ['Usuario', 'Monto', 'Confirmar'];
-
-function Stepper({ step }: { step: number }) {
-  return (
-    <ol className="flex items-center justify-center gap-1.5">
-      {STEPS.map((label, i) => {
-        const n = i + 1;
-        const done = step > n;
-        const active = step === n;
-        return (
-          <li key={label} className="flex items-center gap-1.5">
-            <span
-              className={cn(
-                'flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold transition-colors',
-                done && 'bg-brand-500 text-white',
-                active && 'bg-brand-500 text-white ring-4 ring-brand-500/20',
-                !done && !active && 'bg-gray-100 text-gray-400 dark:bg-gray-800',
-              )}
-            >
-              {done ? <Check className="h-4 w-4" aria-hidden /> : n}
-            </span>
-            <span
-              className={cn(
-                'hidden text-sm font-medium sm:inline',
-                active ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400 dark:text-gray-500',
-              )}
-            >
-              {label}
-            </span>
-            {i < STEPS.length - 1 && (
-              <span
-                className={cn(
-                  'mx-1 h-px w-5 sm:w-8',
-                  done ? 'bg-brand-500' : 'bg-gray-200 dark:bg-gray-700',
-                )}
-              />
-            )}
-          </li>
-        );
-      })}
-    </ol>
-  );
-}
 
 export function SendPage() {
   const { profile } = useAuth();
@@ -166,7 +123,9 @@ export function SendPage() {
     return (
       <div
         className={cn(
-          'flex items-center gap-3 rounded-xl border border-brand-200 bg-brand-50/60 p-3 dark:border-brand-500/30 dark:bg-brand-500/10',
+          // Card neutro con un acento verde fino a la izquierda — minimal.
+          'flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-3',
+          'dark:border-gray-800 dark:bg-surface-dark-elevated',
           big && 'flex-col p-5 text-center',
         )}
       >
@@ -195,11 +154,7 @@ export function SendPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col items-center gap-4">
-        <Stepper step={step} />
-      </div>
-
+    <div className="mx-auto flex w-full max-w-xl flex-col gap-5">
       <Card>
         <CardContent className="flex flex-col gap-5 py-6">
           {/* Paso 1: usuario */}
@@ -209,7 +164,7 @@ export function SendPage() {
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                   ¿A quién le envías?
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
                   Escribe el @username del destinatario.
                 </p>
               </div>
@@ -232,18 +187,23 @@ export function SendPage() {
               </button>
 
               {quickPicks.length > 0 && !resolved && (
-                <div className="flex flex-wrap gap-1.5">
-                  {quickPicks.map((p) => (
-                    <button
-                      key={p.id}
-                      type="button"
-                      onClick={() => setRecipientInput(p.username)}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 py-1 pl-1 pr-2.5 text-xs font-medium text-gray-600 transition-colors hover:border-brand-300 hover:bg-brand-50 dark:border-gray-700 dark:text-gray-300 dark:hover:border-brand-500/40 dark:hover:bg-brand-500/10"
-                    >
-                      <Avatar name={p.display_name} src={p.avatar_url} size="sm" className="!h-5 !w-5 !text-[9px]" />
-                      @{p.username}
-                    </button>
-                  ))}
+                <div>
+                  <p className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    Sugerencias
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {quickPicks.map((p) => (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={() => setRecipientInput(p.username)}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 py-1 pl-1 pr-2.5 text-xs font-medium text-gray-600 transition-colors hover:border-brand-300 hover:bg-brand-50 dark:border-gray-700 dark:text-gray-300 dark:hover:border-brand-500/40 dark:hover:bg-brand-500/10"
+                      >
+                        <Avatar name={p.display_name} src={p.avatar_url} size="sm" className="!h-5 !w-5 !text-[9px]" />
+                        @{p.username}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
 
@@ -265,11 +225,55 @@ export function SendPage() {
           {step === 2 && (
             <>
               <RecipientCard />
+
               <div>
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                   ¿Cuánto le envías?
                 </h2>
+                <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
+                  Indica el monto a debitar de tu saldo.
+                </p>
               </div>
+
+              {/* Callout de saldo — card limpio. El verde solo aparece en
+                  el icono y el monto, no como fondo translúcido. */}
+              {selectedWallet && (
+                <div
+                  className={cn(
+                    'flex items-center justify-between gap-3 rounded-2xl border px-4 py-3',
+                    insufficient
+                      ? 'border-danger-200 bg-white dark:border-danger-500/40 dark:bg-surface-dark-elevated'
+                      : 'border-gray-200 bg-white dark:border-gray-800 dark:bg-surface-dark-elevated',
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={cn(
+                        'flex h-10 w-10 items-center justify-center rounded-xl',
+                        insufficient
+                          ? 'bg-danger-50 text-danger-600 dark:bg-danger-500/15 dark:text-danger-400'
+                          : 'bg-brand-50 text-brand-700 dark:bg-brand-500/15 dark:text-brand-300',
+                      )}
+                    >
+                      <Wallet className="h-[18px] w-[18px]" aria-hidden />
+                    </span>
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-gray-500 dark:text-gray-400">
+                        Saldo disponible
+                      </p>
+                      <p className="text-xl font-bold tabular text-gray-900 dark:text-gray-50">
+                        {formatMoney(selectedWallet.balance, 'USD')}
+                      </p>
+                    </div>
+                  </div>
+                  {insufficient && (
+                    <span className="rounded-full bg-danger-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-danger-600 dark:bg-danger-500/15 dark:text-danger-400">
+                      Insuficiente
+                    </span>
+                  )}
+                </div>
+              )}
+
               <Input
                 label="Monto"
                 type="number"
@@ -280,14 +284,10 @@ export function SendPage() {
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 leftIcon={<span className="text-sm font-medium">$</span>}
-                hint={
-                  selectedWallet
-                    ? `Disponible: ${formatMoney(selectedWallet.balance, 'USD')}`
-                    : undefined
-                }
                 error={insufficient ? 'Saldo insuficiente.' : undefined}
                 autoFocus
               />
+
               <div className="flex gap-3">
                 <Button
                   variant="outline"
@@ -315,7 +315,7 @@ export function SendPage() {
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                   Confirma el envío
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
                   Verifica que es la persona correcta.
                 </p>
               </div>
@@ -337,6 +337,15 @@ export function SendPage() {
                 onChange={(e) => setNote(e.target.value)}
               />
 
+              {/* Resumen del monto en una línea aparte — así el CTA queda con
+                  texto fijo y no se sale del ancho del card. */}
+              <div className="flex items-center justify-between rounded-2xl bg-gray-50 px-4 py-3 dark:bg-gray-800/60">
+                <span className="text-sm text-gray-500 dark:text-gray-400">A debitar</span>
+                <span className="text-lg font-bold tabular text-gray-900 dark:text-gray-50">
+                  {formatMoney(quote.totalDebit, quote.currency)}
+                </span>
+              </div>
+
               <div className="flex gap-3">
                 <Button
                   variant="outline"
@@ -348,11 +357,12 @@ export function SendPage() {
                 </Button>
                 <Button
                   fullWidth
+                  size="lg"
                   leftIcon={<ShieldCheck className="h-4 w-4" />}
                   loading={createOrder.isPending}
                   onClick={handleSend}
                 >
-                  Confirmar y enviar {formatMoney(quote.amount, quote.currency)}
+                  Confirmar y enviar
                 </Button>
               </div>
             </>
