@@ -209,7 +209,7 @@ export default function Hero({
           transition={{ duration: 0.7, delay: 0.25, ease }}
         >
           <img
-            src="/landing/hero.png"
+            src="/landing/hero-h.png"
             alt="App de Brux con tarjeta y saldo"
             className="hero__media-img"
             loading="eager"
