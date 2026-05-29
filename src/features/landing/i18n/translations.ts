@@ -51,6 +51,13 @@ export type LandingDict = {
     cta: string
     items: { title: string; text: string }[]
   }
+  howItWorks: {
+    eyebrow: string
+    headingText: string
+    headingHighlight: string
+    sub: string
+    steps: { title: string; text: string }[]
+  }
   showcase: {
     profileAlt: string
     rows: { title: string; highlight: string; text: string; points: string[] }[]
@@ -93,9 +100,9 @@ export type LandingDict = {
   }
   footer: {
     brand: string
-    columns: { title: string; links: string[] }[]
+    columns: { title: string; links: { label: string; href: string }[] }[]
     rights: string
-    legal: string[]
+    legal: { label: string; href: string }[]
   }
 }
 
@@ -104,10 +111,10 @@ export const translations: Record<Lang, LandingDict> = {
     langSwitch: "Cambiar idioma",
     nav: {
       links: [
-        { href: "#producto", label: "Producto" },
+        { href: "#como-funciona", label: "Cómo funciona" },
         { href: "#capacidades", label: "Capacidades" },
-        { href: "#casos", label: "Casos" },
-        { href: "#empezar", label: "Precios" },
+        { href: "#descarga", label: "App" },
+        { href: "#faq", label: "Preguntas" },
       ],
       signIn: "Iniciar sesión",
       cta: "Crear mi @usuario",
@@ -116,7 +123,7 @@ export const translations: Record<Lang, LandingDict> = {
     hero: {
       title: "Desbloquea las fronteras del dinero",
       highlight: "fronteras",
-      lead: "Un @usuario. Pagos entre países. Cero datos bancarios expuestos.",
+      lead: "Mándale dinero a los tuyos en otro país: fácil, rápido y sin comisiones que se coman lo que envías.",
       ctaPrimary: "Crear mi cuenta",
       ctaSecondary: "Iniciar sesión",
       note: "Verificación de identidad · Sin datos bancarios · Cobros B2B con QR",
@@ -154,6 +161,26 @@ export const translations: Record<Lang, LandingDict> = {
         {
           title: "Familia y amigos",
           text: "Manda dinero a los tuyos, vivan donde vivan. Llega tan rápido como un mensaje.",
+        },
+      ],
+    },
+    howItWorks: {
+      eyebrow: "Cómo funciona",
+      headingText: "Empezar toma minutos, no días",
+      headingHighlight: "minutos",
+      sub: "Tres pasos y ya estás moviendo dinero entre países.",
+      steps: [
+        {
+          title: "Crea tu @usuario",
+          text: "Regístrate, verifica tu identidad una sola vez y reserva el alias con el que el mundo te pagará.",
+        },
+        {
+          title: "Comparte o escanea",
+          text: "Pasas tu @usuario o tu QR. La otra persona no necesita —ni ve— tus datos bancarios.",
+        },
+        {
+          title: "El dinero llega",
+          text: "Recibe y envía entre países en segundos. Sin filas, sin esperas, sin papeleo.",
         },
       ],
     },
@@ -223,28 +250,36 @@ export const translations: Record<Lang, LandingDict> = {
       headingHighlight: "frecuentes",
       items: [
         {
-          q: "¿Qué necesito para empezar?",
-          a: "Crear tu cuenta, verificar tu identidad una sola vez y elegir tu @usuario. En minutos puedes enviar y recibir pagos.",
+          q: "¿Qué es Brux?",
+          a: "Una forma simple de enviar y recibir dinero entre países. En vez de cuentas y números largos, usas tu @usuario o un QR, y el dinero se mueve tan rápido como un mensaje.",
         },
         {
-          q: "¿Cómo me pagan mis clientes?",
-          a: "Comparten tu @usuario o escanean tu código QR. Nunca necesitan ni ven tus datos bancarios.",
+          q: "¿Cómo envío dinero a otra persona?",
+          a: "Eliges a quién (su @usuario, correo o QR), pones el monto y confirmas. En unos toques tu envío está en camino.",
         },
         {
-          q: "¿Por qué es más seguro?",
-          a: "Al no exponer cuentas ni datos bancarios, y al verificar a cada usuario, se reduce el espacio para las estafas.",
+          q: "¿Puedo enviar dinero usando solo un @usuario?",
+          a: "Sí. El @usuario es la identidad de pago: con eso basta para enviar o cobrar, sin pedir ni mostrar datos bancarios.",
         },
         {
-          q: "¿Sirve para mi negocio (B2B)?",
-          a: "Sí. Brux está pensado para cobros entre empresas con código QR, simples y fáciles de rastrear.",
+          q: "¿La otra persona necesita tener Brux?",
+          a: "Para recibir en Brux, sí necesita su cuenta y su @usuario. Crearla es gratis y toma menos de un minuto.",
         },
         {
-          q: "¿Puedo enviar dinero a otro país?",
-          a: "Sí, es el corazón de Brux: mover dinero de un país a otro de forma simple y directa.",
+          q: "¿Cuánto tarda en llegar el dinero?",
+          a: "La mayoría de los envíos llegan en segundos. Entre algunos países puede tardar un poco más según la red, pero siempre ves el estado en tiempo real.",
         },
         {
-          q: "¿En qué países está disponible?",
-          a: "En varios países de Latinoamérica: El Salvador, Brasil, Colombia, Argentina, México y Costa Rica.",
+          q: "¿Cuánto cuesta enviar dinero?",
+          a: "Usamos el tipo de cambio real, sin márgenes ocultos ni comisiones altas que se coman lo que mandas. Antes de confirmar ves exactamente cuánto recibe la otra persona.",
+        },
+        {
+          q: "¿Puedo recibir dinero sin compartir mi cuenta bancaria?",
+          a: "Sí. Compartes tu @usuario o tu QR y listo: nunca expones tu número de cuenta ni tus datos bancarios.",
+        },
+        {
+          q: "¿En qué países estará disponible Brux?",
+          a: "Empezamos en varios países de Latinoamérica: El Salvador, México, Guatemala, Colombia, Brasil, Argentina y Costa Rica, y seguiremos sumando más.",
         },
       ],
     },
@@ -268,23 +303,31 @@ export const translations: Record<Lang, LandingDict> = {
       google: { small: "Disponible en", big: "Google Play" },
     },
     footer: {
-      brand: "Pagos internacionales con un identificador simple: @usuario, teléfono, correo o QR. Dinero que se mueve a la velocidad de un mensaje.",
+      brand: "Manda dinero a los tuyos en otro país: fácil, rápido y sin comisiones que se coman lo que envías.",
       columns: [
         {
           title: "Producto",
-          links: ["Cómo funciona", "Pagos globales", "Cobro con QR", "Seguridad"],
+          links: [
+            { label: "Cómo funciona", href: "#como-funciona" },
+            { label: "Capacidades", href: "#capacidades" },
+            { label: "App móvil", href: "#descarga" },
+            { label: "Preguntas", href: "#faq" },
+          ],
         },
         {
-          title: "Casos de uso",
-          links: ["Personas", "Negocios", "Creadores", "Desarrolladores"],
-        },
-        {
-          title: "Empresa",
-          links: ["Sobre Brux", "Regulación", "Empleo", "Contacto"],
+          title: "Empezar",
+          links: [
+            { label: "Reservar mi @usuario", href: "#empezar" },
+            { label: "Volver al inicio", href: "#inicio" },
+          ],
         },
       ],
       rights: "Todos los derechos reservados.",
-      legal: ["Privacidad", "Términos", "Cookies"],
+      legal: [
+        { label: "Privacidad", href: "#" },
+        { label: "Términos", href: "#" },
+        { label: "Cookies", href: "#" },
+      ],
     },
   },
 
@@ -292,10 +335,10 @@ export const translations: Record<Lang, LandingDict> = {
     langSwitch: "Change language",
     nav: {
       links: [
-        { href: "#producto", label: "Product" },
+        { href: "#como-funciona", label: "How it works" },
         { href: "#capacidades", label: "Features" },
-        { href: "#casos", label: "Use cases" },
-        { href: "#empezar", label: "Pricing" },
+        { href: "#descarga", label: "App" },
+        { href: "#faq", label: "FAQ" },
       ],
       signIn: "Sign in",
       cta: "Create my @username",
@@ -304,7 +347,7 @@ export const translations: Record<Lang, LandingDict> = {
     hero: {
       title: "Unlock the borders of money",
       highlight: "borders",
-      lead: "One @username. Cross-border payments. Zero bank details exposed.",
+      lead: "Send money to your people in another country: easy, fast, and without fees that eat into what you send.",
       ctaPrimary: "Create my account",
       ctaSecondary: "Sign in",
       note: "Identity verification · No bank details · B2B payments with QR",
@@ -342,6 +385,26 @@ export const translations: Record<Lang, LandingDict> = {
         {
           title: "Family & friends",
           text: "Send money to your people, wherever they live. It arrives as fast as a message.",
+        },
+      ],
+    },
+    howItWorks: {
+      eyebrow: "How it works",
+      headingText: "Getting started takes minutes, not days",
+      headingHighlight: "minutes",
+      sub: "Three steps and you're already moving money across borders.",
+      steps: [
+        {
+          title: "Create your @username",
+          text: "Sign up, verify your identity once, and reserve the alias the world will pay you with.",
+        },
+        {
+          title: "Share or scan",
+          text: "Hand over your @username or QR. The other person never needs — or sees — your bank details.",
+        },
+        {
+          title: "Money arrives",
+          text: "Send and receive across countries in seconds. No lines, no waiting, no paperwork.",
         },
       ],
     },
@@ -411,28 +474,36 @@ export const translations: Record<Lang, LandingDict> = {
       headingHighlight: "questions",
       items: [
         {
-          q: "What do I need to get started?",
-          a: "Create your account, verify your identity once, and choose your @username. In minutes you can send and receive payments.",
+          q: "What is Brux?",
+          a: "A simple way to send and receive money across countries. Instead of accounts and long numbers, you use your @username or a QR, and money moves as fast as a message.",
         },
         {
-          q: "How do my customers pay me?",
-          a: "They share your @username or scan your QR code. They never need or see your bank details.",
+          q: "How do I send money to someone?",
+          a: "Pick who (their @username, email or QR), enter the amount and confirm. In a few taps your transfer is on its way.",
         },
         {
-          q: "Why is it safer?",
-          a: "By not exposing accounts or bank details, and by verifying every user, there's less room for scams.",
+          q: "Can I send money using just a @username?",
+          a: "Yes. The @username is your payment identity: that's all you need to send or get paid — no bank details asked for or shown.",
         },
         {
-          q: "Does it work for my business (B2B)?",
-          a: "Yes. Brux is built for business-to-business payments with QR codes — simple and easy to track.",
+          q: "Does the other person need Brux?",
+          a: "To receive on Brux, yes — they need an account and their @username. Creating one is free and takes less than a minute.",
         },
         {
-          q: "Can I send money to another country?",
-          a: "Yes — that's the heart of Brux: moving money from one country to another, simply and directly.",
+          q: "How long does the money take to arrive?",
+          a: "Most transfers arrive in seconds. Between some countries it may take a little longer depending on the network, but you always see the status in real time.",
         },
         {
-          q: "Which countries is it available in?",
-          a: "Across several countries in Latin America: El Salvador, Brazil, Colombia, Argentina, Mexico, and Costa Rica.",
+          q: "How much does it cost to send money?",
+          a: "We use the real exchange rate, with no hidden margins and no high fees eating into what you send. Before you confirm, you see exactly how much the other person receives.",
+        },
+        {
+          q: "Can I receive money without sharing my bank account?",
+          a: "Yes. You share your @username or QR and that's it: you never expose your account number or bank details.",
+        },
+        {
+          q: "Which countries will Brux be available in?",
+          a: "We're starting across Latin America: El Salvador, Mexico, Guatemala, Colombia, Brazil, Argentina and Costa Rica, and we'll keep adding more.",
         },
       ],
     },
@@ -456,23 +527,31 @@ export const translations: Record<Lang, LandingDict> = {
       google: { small: "Get it on", big: "Google Play" },
     },
     footer: {
-      brand: "International payments with one simple identifier: @username, phone, email, or QR. Money that moves at the speed of a message.",
+      brand: "Send money to your people in another country: easy, fast, and without fees that eat into what you send.",
       columns: [
         {
           title: "Product",
-          links: ["How it works", "Global payments", "QR payments", "Security"],
+          links: [
+            { label: "How it works", href: "#como-funciona" },
+            { label: "Features", href: "#capacidades" },
+            { label: "Mobile app", href: "#descarga" },
+            { label: "FAQ", href: "#faq" },
+          ],
         },
         {
-          title: "Use cases",
-          links: ["Individuals", "Businesses", "Creators", "Developers"],
-        },
-        {
-          title: "Company",
-          links: ["About Brux", "Compliance", "Careers", "Contact"],
+          title: "Get started",
+          links: [
+            { label: "Reserve my @username", href: "#empezar" },
+            { label: "Back to top", href: "#inicio" },
+          ],
         },
       ],
       rights: "All rights reserved.",
-      legal: ["Privacy", "Terms", "Cookies"],
+      legal: [
+        { label: "Privacy", href: "#" },
+        { label: "Terms", href: "#" },
+        { label: "Cookies", href: "#" },
+      ],
     },
   },
 }

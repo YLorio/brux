@@ -213,7 +213,6 @@ export default function Hero({
             alt="App de Brux con tarjeta y saldo"
             className="hero__media-img"
             loading="eager"
-            fetchPriority="high"
           />
         </motion.div>
       </div>
