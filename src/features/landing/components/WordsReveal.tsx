@@ -1,4 +1,4 @@
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { motion, useInView, type Variants } from "framer-motion"
 
 const ease = [0.22, 1, 0.36, 1] as const
@@ -43,6 +43,14 @@ export default function WordsReveal({
 }: Props) {
   const ref = useRef<HTMLHeadingElement>(null)
   const inView = useInView(ref, { once: true, margin: "-80px" })
+  // Fallback: si el observer no dispara (scroll rápido o remount al cambiar
+  // idioma), mostramos el texto igual a los ~1.1s. Evita títulos invisibles.
+  const [fallback, setFallback] = useState(false)
+  useEffect(() => {
+    const id = setTimeout(() => setFallback(true), 1100)
+    return () => clearTimeout(id)
+  }, [text])
+  const show = inView || fallback
 
   const words = text.split(" ")
   const Comp = as === "h1" ? motion.h1 : motion.h2
@@ -57,7 +65,7 @@ export default function WordsReveal({
       className={className}
       variants={container}
       initial="hidden"
-      animate={inView ? "show" : "hidden"}
+      animate={show ? "show" : "hidden"}
     >
       {words.map((w, i) => {
         const isHl = hlSet.has(strip(w))

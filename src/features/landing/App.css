@@ -259,7 +259,10 @@
   background: var(--card-2);
 }
 .nav__lang button {
-  padding: 5px 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px 5px 8px;
   border-radius: 999px;
   font-weight: 600;
   font-size: var(--fs-sm);
@@ -270,6 +273,23 @@
 }
 .nav__lang button:hover {
   color: var(--green-ink);
+}
+/* Bandera redonda dentro del botón de idioma. */
+.nav__lang-flag {
+  display: inline-flex;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgba(11, 27, 36, 0.12);
+}
+.nav__lang-flag .flag {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  box-shadow: none;
+  vertical-align: top;
 }
 .nav__lang button.is-active,
 .nav__lang button.is-active:hover {
@@ -321,13 +341,22 @@
 /* El copy reemplaza el padding que tenía el .hero__inner. Padding-bottom
    propio así no queda pegado a la imagen cuando se apilan en móvil. */
 .hero__copy {
+  /* min-width:0 evita el "grid blowout": sin esto la imagen impone su
+     min-content como mínimo de la columna y la ensancha más que el
+     viewport, corriendo el copy centrado a la derecha en móvil. */
+  min-width: 0;
   padding-inline: clamp(24px, 6vw, 96px);
   padding-bottom: clamp(32px, 4vw, 56px);
 }
 .hero__media {
   display: flex;
-  justify-content: stretch;
+  justify-content: center;
+  /* align-items: flex-end (no stretch): en Safari el `align-items: stretch`
+     por defecto estira la imagen en vertical (se ve "alta/vertical") porque
+     tiene height:auto dentro de un flex. Anclarla abajo conserva su ratio. */
+  align-items: flex-end;
   align-self: end;
+  min-width: 0;
 }
 /* Imagen — flushea a los bordes (right/bottom) y se difumina por el lado
    que toca el copy, integrándose con el fondo del hero. Sin drop-shadow
@@ -335,6 +364,9 @@
 .hero__media-img {
   width: 100%;
   height: auto;
+  /* Safari: además del align-items del contenedor, anclamos el propio
+     item para que NUNCA se estire en vertical (conserva el ratio 16:9). */
+  align-self: flex-end;
   display: block;
   /* MÓVIL: la imagen está debajo del copy → difuminar por arriba.
      El primer 22% se desvanece al bg de la página; el resto queda
@@ -1092,71 +1124,194 @@
   font-size: var(--fs-base);
 }
 
-/* ---------- Comparación (problema → solución) ---------- */
-.compare__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 22px;
-  max-width: 880px;
-  margin: 0 auto;
+/* ---------- Cómo funciona (stepper fuera + card verde con teléfono que sobresale) ---------- */
+.howitworks {
+  background: #f4f5f4;
 }
-.compare__card {
-  padding: 34px;
-  border-radius: 24px;
-  border: 1px solid var(--border);
+
+/* Stepper horizontal — FUERA del card, sobre el gris. El gran margen
+   inferior deja el hueco por donde el teléfono sobresale del card. */
+.hiw__tabs {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(8px, 2.5vw, 30px);
+  margin: 0 auto clamp(88px, 11vw, 132px);
+  padding: 0;
+  list-style: none;
 }
-.compare__card--bad {
-  background: var(--bg-2);
-}
-.compare__card--good {
-  background: var(--green-tint);
-  border-color: rgba(10, 157, 102, 0.3);
-  box-shadow: 0 24px 50px -36px rgba(11, 27, 36, 0.22);
-}
-.compare__tag {
-  display: inline-block;
-  font-size: var(--fs-sm);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+.hiw__tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 4px 13px;
+  background: transparent;
   color: var(--text-dim);
-  margin-bottom: 22px;
+  font-size: var(--fs-base);
+  font-weight: 600;
+  transition: color 0.3s ease;
 }
-.compare__tag--good {
+.hiw__tab:hover {
+  color: var(--ink);
+}
+.hiw__tab.is-active {
   color: var(--green-ink);
 }
-.compare__list {
-  display: grid;
-  gap: 16px;
-}
-.compare__list li {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  font-size: var(--fs-md);
-  color: var(--text);
-}
-.compare__card--bad .compare__list li {
-  color: var(--text-dim);
-}
-.compare__x,
-.compare__check {
+.hiw__tab-num {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  flex-shrink: 0;
+  background: #e2e6e6;
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  transition: background 0.3s ease, color 0.3s ease;
 }
-.compare__x {
-  background: rgba(10, 28, 36, 0.06);
-  color: #94a1ab;
+.hiw__tab.is-active .hiw__tab-num {
+  background: var(--green);
+  color: #fff;
 }
-.compare__check {
-  background: rgba(0, 194, 129, 0.16);
-  color: var(--green-ink);
+/* Barra de progreso del paso activo (se rellena durante STEP_MS). */
+.hiw__tab-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--green-tint);
+  overflow: hidden;
 }
+.hiw__tab-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--green);
+}
+
+/* Card verde — sin overflow hidden para que el teléfono sobresalga. */
+.hiw__stage {
+  position: relative;
+  border-radius: clamp(24px, 3vw, 36px);
+  background: linear-gradient(155deg, #0a7d52 0%, #0a9d66 58%, #12b87a 100%);
+  padding: 0 clamp(18px, 4vw, 48px) clamp(32px, 4vw, 48px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(20px, 3vw, 32px);
+}
+
+/* Teléfono — sube con margin-top negativo para sobresalir del borde
+   superior del card (como en la referencia). */
+.hiw__phone-wrap {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: clamp(-92px, -8vw, -64px);
+}
+/* Anillos concéntricos — capa propia recortada al card (border-radius +
+   overflow hidden) para que NO sobresalgan aunque el card no recorte. */
+.hiw__rings {
+  position: absolute;
+  inset: 0;
+  border-radius: clamp(24px, 3vw, 36px);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  z-index: 0;
+}
+.hiw__ring {
+  position: absolute;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+.hiw__ring--1 {
+  width: 300px;
+}
+.hiw__ring--2 {
+  width: 460px;
+  border-color: rgba(255, 255, 255, 0.11);
+}
+.hiw__ring--3 {
+  width: 640px;
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+/* App demo — ventana flotante (sin marco), más compacta. */
+.appdemo {
+  position: relative;
+  z-index: 1;
+  width: 250px;
+  max-width: 100%;
+}
+.appdemo__glow {
+  display: none;
+}
+.appdemo__viewport {
+  position: relative;
+  z-index: 1;
+  width: 250px;
+  height: 500px;
+  border-radius: 32px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 40px 70px -32px rgba(7, 40, 28, 0.55),
+    0 12px 28px -14px rgba(7, 40, 28, 0.4);
+}
+.appdemo__screen {
+  position: absolute;
+  inset: 0;
+}
+/* Lienzo a tamaño de diseño fijo (300×600) escalado a 250×500. Así el
+   contenido conserva sus proporciones; achicar el teléfono no lo deforma. */
+.appdemo__canvas {
+  width: 300px;
+  height: 600px;
+  transform: scale(0.8333);
+  transform-origin: top left;
+}
+
+/* Descripción del paso activo — blanca y legible. */
+.hiw__caption {
+  position: relative;
+  z-index: 2;
+  max-width: 44ch;
+  text-align: center;
+  color: #ffffff;
+  font-size: var(--fs-lg);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+@media (max-width: 620px) {
+  .hiw__tab {
+    font-size: var(--fs-sm);
+    gap: 7px;
+    padding-bottom: 11px;
+  }
+  .hiw__tab-num {
+    width: 22px;
+    height: 22px;
+  }
+  .hiw__ring--3 {
+    width: 480px;
+  }
+  .hiw__caption {
+    font-size: var(--fs-md);
+  }
+}
+
 
 /* ---------- Showcase (filas alternadas) ---------- */
 .feature-row {
@@ -1599,9 +1754,16 @@
   .welcome__card::after {
     background: rgba(11, 27, 36, 0.72);
   }
+  /* El body llena el card y puede encoger (evita que el contenido
+     —texto e input— se desborde por la derecha). */
   .welcome__body {
     max-width: none;
-    padding: 40px 26px;
+    width: 100%;
+    min-width: 0;
+    padding: 36px 22px;
+  }
+  .welcome__body .waitlist__title {
+    max-width: none;
   }
 }
 
@@ -1650,6 +1812,28 @@
 }
 .welcome__input:focus {
   outline: none;
+}
+
+/* Móvil: form del CTA en columna, input y botón a ancho completo. Va
+   DESPUÉS de las reglas base (.welcome__form/.welcome__field) porque los
+   media queries no suman especificidad: si fuera antes, las base ganarían
+   por orden de fuente y el input volvería a desbordar el card. */
+@media (max-width: 620px) {
+  .welcome__form {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    max-width: none;
+    width: 100%;
+  }
+  .welcome__field {
+    flex: none;
+    width: 100%;
+    min-width: 0;
+  }
+  .welcome__form .btn {
+    width: 100%;
+  }
 }
 
 /* Banderas (country-flag-icons) */
@@ -2031,42 +2215,47 @@
   max-width: 64ch;
 }
 
-/* ---------- Footer ---------- */
+/* ---------- Footer (rediseñado) ---------- */
 .footer {
+  background: #ffffff;
   border-top: 1px solid var(--border);
-  padding: 60px 0 32px;
+  padding: clamp(48px, 6vw, 72px) 0 28px;
 }
-.footer__inner {
+.footer__top {
   display: grid;
-  grid-template-columns: 1.4fr 2fr;
-  gap: 48px;
-  padding-bottom: 40px;
+  grid-template-columns: 1.3fr 1.7fr;
+  gap: clamp(32px, 5vw, 72px);
+  padding-bottom: clamp(32px, 4vw, 44px);
   border-bottom: 1px solid var(--border);
 }
-.footer__brand p {
+.footer__tagline {
   margin-top: 16px;
-  max-width: 320px;
+  max-width: 34ch;
   font-size: var(--fs-base);
   color: var(--text-dim);
-  line-height: 1.7;
+  line-height: 1.65;
 }
 .footer__cols {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 24px;
 }
 .footer__col h4 {
-  font-size: var(--fs-base);
+  font-size: var(--fs-sm);
   font-weight: 700;
-  margin-bottom: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 16px;
 }
 .footer__col ul {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 .footer__col a {
   font-size: var(--fs-base);
-  color: var(--text-dim);
+  font-weight: 500;
+  color: var(--ink);
   transition: color 0.18s ease;
 }
 .footer__col a:hover {
@@ -2076,8 +2265,9 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  align-items: center;
   gap: 12px;
-  padding-top: 26px;
+  padding-top: 24px;
   font-size: var(--fs-sm);
   color: var(--text-dim);
 }
@@ -2085,8 +2275,18 @@
   display: flex;
   gap: 22px;
 }
+.footer__legal a {
+  color: var(--text-dim);
+  transition: color 0.18s ease;
+}
 .footer__legal a:hover {
   color: var(--green-ink);
+}
+@media (max-width: 760px) {
+  .footer__top {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
 }
 
 /* ============================================================
@@ -2124,10 +2324,6 @@
   .feat-list {
     display: inline-grid;
     text-align: left;
-  }
-  .footer__inner {
-    grid-template-columns: 1fr;
-    gap: 36px;
   }
 
   /* Menú móvil */
@@ -2186,9 +2382,17 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 32px 16px;
   }
-  .compare__grid,
   .usecases__grid {
     grid-template-columns: 1fr;
+  }
+  /* Footer: 3 columnas no caben en móvil (palabras largas como
+     "Desarrolladores" desbordan). A 2 columnas. */
+  .footer__cols {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 20px;
+  }
+  .footer__col {
+    min-width: 0;
   }
   .hero__fcard--in {
     left: 0;

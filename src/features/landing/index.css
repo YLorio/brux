@@ -72,6 +72,10 @@ html {
 }
 
 .brux-landing {
+  /* El landing es siempre claro: si `html.dark` (tema del panel) sigue
+     puesto, esto evita que los controles nativos e inputs hereden el
+     esquema oscuro mientras LandingPage le quita la clase al <html>. */
+  color-scheme: light;
   font-family: var(--font);
   /* Base fluida: todos los elementos sin font-size explícito heredan esto. */
   font-size: var(--fs-base);
