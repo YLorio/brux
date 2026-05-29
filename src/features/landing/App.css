@@ -348,13 +348,11 @@
   padding-inline: clamp(24px, 6vw, 96px);
   padding-bottom: clamp(32px, 4vw, 56px);
 }
+/* SIN flex: un contenedor flex deforma el <img> en Safari (lo estira en
+   vertical). Como bloque simple, la imagen respeta su ratio en todos los
+   navegadores por igual. */
 .hero__media {
-  display: flex;
-  justify-content: center;
-  /* align-items: flex-end (no stretch): en Safari el `align-items: stretch`
-     por defecto estira la imagen en vertical (se ve "alta/vertical") porque
-     tiene height:auto dentro de un flex. Anclarla abajo conserva su ratio. */
-  align-items: flex-end;
+  display: block;
   align-self: end;
   min-width: 0;
 }
@@ -364,9 +362,10 @@
 .hero__media-img {
   width: 100%;
   height: auto;
-  /* Safari: además del align-items del contenedor, anclamos el propio
-     item para que NUNCA se estire en vertical (conserva el ratio 16:9). */
-  align-self: flex-end;
+  /* aspect-ratio fija la caja a partir del ancho (1672×941 = la imagen real),
+     así Safari NO puede estirarla: su alto siempre se calcula del ancho. */
+  aspect-ratio: 1672 / 941;
+  object-fit: contain;
   display: block;
   /* MÓVIL: la imagen está debajo del copy → difuminar por arriba.
      El primer 22% se desvanece al bg de la página; el resto queda
